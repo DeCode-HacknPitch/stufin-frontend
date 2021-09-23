@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { Button, TextField, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const useStyles = makeStyles((theme) => ({
   signupContainer: {
@@ -33,6 +34,7 @@ const Signup = ({}) => {
   }, []);
 
   const handleSubmit = useCallback(() => {
+    if(password.length < 6) return toast.error("Password must be of 6 chars");
     axios
       .post("http://localhost:5000/api/v1/user/signup", {
         email,
@@ -65,7 +67,7 @@ const Signup = ({}) => {
           Sign up
         </Typography>
 
-        <form className={classes.form} noValidate onSubmit={handleSubmit}>
+        <div className={classes.form} noValidate>
           <TextField
             onChange={handleEmailChange}
             value={email}
@@ -99,10 +101,13 @@ const Signup = ({}) => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={() => {
+              handleSubmit()
+            }}
           >
             Sign Up
           </Button>
-        </form>
+        </div>
       </Grid>
     </Grid>
   );
