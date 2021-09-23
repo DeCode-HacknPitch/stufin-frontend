@@ -2,10 +2,11 @@ import React, { useCallback, useState } from "react";
 import { Button, TextField, Grid, Typography, Link } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
+import firebase from "firebase";
 import toast from "react-hot-toast";
 
 const useStyles = makeStyles((theme) => ({
-  signupContainer: {
+  LoginContainer: {
     width: 400,
     padding: theme.spacing(3),
     borderRadius: 20,
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Signup = ({ redirectToLoginPage }) => {
+const Login = ({ redirectToSignupPage }) => {
   const [email, changeEmail] = useState("");
   const [password, changePassword] = useState("");
   const classes = useStyles();
@@ -34,17 +35,22 @@ const Signup = ({ redirectToLoginPage }) => {
   }, []);
 
   const handleSubmit = useCallback(() => {
-    if (password.length < 6) return toast.error("Password must be of 6 chars");
-    axios
-      .post("http://localhost:5000/api/v1/user/signup", {
-        email,
-        password,
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((user) => {
+        return user.getIdToken().then((idToken) => {
+          axios
+            .post("http://localhost:5000/api/v1/user/signup", {
+              idToken,
+            })
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        });
       });
   });
 
@@ -61,10 +67,10 @@ const Signup = ({ redirectToLoginPage }) => {
         direction="column"
         justifyContent="center"
         alignItems="center"
-        className={classes.signupContainer}
+        className={classes.LoginContainer}
       >
         <Typography component="h1" variant="h5">
-          Sign up
+          Login
         </Typography>
 
         <div className={classes.form} noValidate>
@@ -105,20 +111,13 @@ const Signup = ({ redirectToLoginPage }) => {
               handleSubmit();
             }}
           >
-            Sign Up
+            Login
           </Button>
 
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link onClick={redirectToLoginPage} variant="body2">
-                Already have an account? Log In
-              </Link>
-            </Grid>
+          <Grid item>
+            <Link onClick={redirectToSignupPage} variant="body2">
+              Don't have an account? Sign Up
+            </Link>
           </Grid>
         </div>
       </Grid>
@@ -126,4 +125,4 @@ const Signup = ({ redirectToLoginPage }) => {
   );
 };
 
-export default Signup;
+export default Login;
