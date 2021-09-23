@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Button, TextField, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   signupContainer: {
@@ -31,6 +32,20 @@ const Signup = ({}) => {
     changePassword(event.target.value);
   }, []);
 
+  const handleSubmit = useCallback(() => {
+    axios
+      .post("http://localhost:5000/api/v1/user/signup", {
+        email,
+        password,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+
   return (
     <Grid
       container
@@ -50,7 +65,7 @@ const Signup = ({}) => {
           Sign up
         </Typography>
 
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             onChange={handleEmailChange}
             value={email}
