@@ -1,10 +1,11 @@
- import Button from '@mui/material/Button';
-
+import { Signup } from "./pages";
 
 const App = () => {
-  return <div>
-    <Button variant="contained">Hello World</Button>
-  </div>;
+  return (
+    <div>
+      <Signup />
+    </div>
+  );
 };
 
 export default App;

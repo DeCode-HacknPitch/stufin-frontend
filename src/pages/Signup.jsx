@@ -1,0 +1,96 @@
+import React, { useCallback, useState } from "react";
+import { Button, TextField, Grid, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  signupContainer: {
+    width: 400,
+    padding: theme.spacing(3),
+    borderRadius: 20,
+    border: "2px solid #303F9F",
+  },
+  form: {
+    width: "100%",
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
+
+const Signup = ({}) => {
+  const [email, changeEmail] = useState("");
+  const [password, changePassword] = useState("");
+  const classes = useStyles();
+
+  const handleEmailChange = useCallback((event) => {
+    changeEmail(event.target.value);
+  }, []);
+
+  const handlePasswordChange = useCallback((event) => {
+    changePassword(event.target.value);
+  }, []);
+
+  return (
+    <Grid
+      container
+      direction="column"
+      justifyContent="center"
+      alignItems="center"
+      style={{ height: "90vh" }}
+    >
+      <Grid
+        container
+        direction="column"
+        justifyContent="center"
+        alignItems="center"
+        className={classes.signupContainer}
+      >
+        <Typography component="h1" variant="h5">
+          Sign up
+        </Typography>
+
+        <form className={classes.form} noValidate>
+          <TextField
+            onChange={handleEmailChange}
+            value={email}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+          />
+          <TextField
+            onChange={handlePasswordChange}
+            value={password}
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+          />
+
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+          >
+            Sign Up
+          </Button>
+        </form>
+      </Grid>
+    </Grid>
+  );
+};
+
+export default Signup;
