@@ -2,7 +2,8 @@ import React, { useCallback, useState } from "react";
 import { Button, TextField, Grid, Typography, Link } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
-import firebase from "firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config";
 import toast from "react-hot-toast";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,24 +36,23 @@ const Login = ({ redirectToSignupPage }) => {
   }, []);
 
   const handleSubmit = useCallback(() => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((user) => {
-        return user.getIdToken().then((idToken) => {
-          axios
-            .post("http://localhost:5000/api/v1/user/signup", {
-              idToken,
-            })
-            .then((res) => {
-              console.log(res);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        });
+    signInWithEmailAndPassword(auth, email, password).then((user) => {
+      return user.user.getIdToken().then((idToken) => {
+        axios
+          .post("http://localhost:5000/api/v1/user/login", {
+            idToken,
+          })
+          .then((res) => {
+            console.log(res);
+            toast.success("Signed in");
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error("Something went wrong");
+          });
       });
-  });
+    });
+  }, [email, password]);
 
   return (
     <Grid
@@ -73,7 +73,7 @@ const Login = ({ redirectToSignupPage }) => {
           Login
         </Typography>
 
-        <div className={classes.form} noValidate>
+        <div className={classes.form}>
           <TextField
             onChange={handleEmailChange}
             value={email}

@@ -42,11 +42,12 @@ const Signup = ({ redirectToLoginPage }) => {
       })
       .then((res) => {
         console.log(res);
+        toast.success("Signed Up");
       })
       .catch((err) => {
         console.log(err);
       });
-  });
+  }, [email, password]);
 
   return (
     <Grid
@@ -67,7 +68,7 @@ const Signup = ({ redirectToLoginPage }) => {
           Sign up
         </Typography>
 
-        <div className={classes.form} noValidate>
+        <div className={classes.form}>
           <TextField
             onChange={handleEmailChange}
             value={email}
