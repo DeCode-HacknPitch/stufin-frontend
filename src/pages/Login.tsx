@@ -39,9 +39,13 @@ const Login = ({ redirectToSignupPage }) => {
     signInWithEmailAndPassword(auth, email, password).then((user) => {
       return user.user.getIdToken().then((idToken) => {
         axios
-          .post("http://localhost:5000/api/v1/user/login", {
-            idToken,
-          })
+          .post(
+            "http://localhost:5000/api/v1/user/login",
+            {
+              idToken,
+            },
+            { withCredentials: true }
+          )
           .then((res) => {
             console.log(res);
             toast.success("Signed in");
